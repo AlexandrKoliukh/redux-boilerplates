@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 const sliceName = 'errors';
 
-const rejectedRegExp = new RegExp(`/${fetchingStatuses.rejected}`)
+const rejectedRegExp = new RegExp(`/${fetchingStatuses.rejected}$`)
 
 const errors = createSlice({
   name: sliceName,
@@ -24,10 +24,12 @@ const errors = createSlice({
       (state, action) => {
         const { error, payload } = action;
         const actionType = action.type.replace(rejectedRegExp, '');
+
         state[actionType] = {
           error,
           payload,
         } as IError;
+
         const message = payload?.detail || error?.message;
         toast.error(message);
       }

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { trimStart } from 'lodash';
-import { IFetchingStatuses } from 'types';
-import { fetchingStatuses } from 'utils/constants';
+import { IFetchingStatuses } from './types';
+import { fetchingStatuses } from './utils/constants';
 
 const sliceName = 'fetchingStatuses';
 
@@ -20,17 +20,17 @@ const slice = createSlice({
       (state, action) => {
         const [match] = action.type.match(loadingTypesRegExp);
         const fetchingStatus = trimStart(match, '/');
-        const actionTypePrefix = action.type.replace(loadingTypesRegExp, '');
+        const actionTypePrefix = action.type.replace(match, '');
 
         state[actionTypePrefix] = fetchingStatus;
       }
     ),
 });
 
-export default slice.reducer;
-
 export const fetchingStatusesSelectors = {
   selectState: (state) => state[sliceName],
   selectByType: (type) => (state) =>
     state[sliceName][type] || fetchingStatuses.idle,
 };
+
+export default slice.reducer;

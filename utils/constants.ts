@@ -1,4 +1,4 @@
-import { IError } from 'types';
+import { IError } from '../types';
 
 export const fetchingStatuses = {
   pending: 'pending' as const,
@@ -23,32 +23,3 @@ export const errorTypes = {
   auth: 'auth' as const,
   common: 'common' as const,
 };
-
-export const browserRoutes = {
-  root: '/' as const,
-  login: '/login' as const,
-};
-
-export const themes = {
-  themeDark: 'theme-dark' as const,
-  themeLight: 'theme-light' as const,
-};
-
-export const languages = {
-  en: 'en' as const,
-  ru: 'ru' as const,
-};
-
-export const localStorageKeys = {
-  theme: 'theme' as const,
-  accessToken: 'access_token' as const,
-};
-
-export const modalStateTypes = {};
-
-export const mediaQueries = {
-  sm: '(max-width: 489px)' as const,
-  md: '(max-width: 991px)' as const,
-};
-
-export const dateRangeSeparator = '&&';
