@@ -20,7 +20,7 @@ const errors = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       // @ts-ignore
-      (action) => action.type.endsWith(fetchingStatuses.rejected),
+      (action) => rejectedRegExp.test(action.type),
       (state, action) => {
         const { error, payload } = action;
         const actionType = action.type.replace(rejectedRegExp, '');
