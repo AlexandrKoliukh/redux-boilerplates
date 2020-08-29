@@ -35,4 +35,4 @@ export const fetchingStatusesSelectors = {
 
 export const fetchingStatusesReducer = slice.reducer;
 
-<BlockUI blockingAction={fetchAetitles}> </BlockUI>
+<BlockUI blockingAction={asyncAction}> </BlockUI>
