@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { trimStart } from 'lodash';
-import { IFetchingStatuses } from './types';
-import { fetchingStatuses } from './utils/constants';
+import { IFetchingStatuses } from 'types';
+import { fetchingStatuses, sliceNames } from 'utils/constants';
 
-const sliceName = 'fetchingStatuses';
+const sliceName = sliceNames.fetchingStatuses;
 
 const loadingTypesRegExp = new RegExp(
   `(/${fetchingStatuses.pending}|/${fetchingStatuses.fulfilled}|/${fetchingStatuses.rejected})$`
@@ -20,9 +20,9 @@ const slice = createSlice({
       (state, action) => {
         const [match] = action.type.match(loadingTypesRegExp);
         const fetchingStatus = trimStart(match, '/');
-        const actionTypePrefix = action.type.replace(match, '');
+        const actionTypePrefix = action.type.replace(loadingTypesRegExp, '');
 
-        state[actionTypePrefix] = fetchingStatus;
+        state[actionTypePrefix] = fetchingStatus as IFetchingStatuses;
       }
     ),
 });
@@ -33,4 +33,6 @@ export const fetchingStatusesSelectors = {
     state[sliceName][type] || fetchingStatuses.idle,
 };
 
-export default slice.reducer;
+export const fetchingStatusesReducer = slice.reducer;
+
+<BlockUI blockingAction={fetchAetitles}> </BlockUI>
