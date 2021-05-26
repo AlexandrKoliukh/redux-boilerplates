@@ -1,38 +1,55 @@
 import { createSlice } from '@reduxjs/toolkit';
+
 import { trimStart } from 'lodash';
-import { IFetchingStatuses } from 'types';
-import { fetchingStatuses, sliceNames } from 'utils/constants';
 
-const sliceName = sliceNames.fetchingStatuses;
+const sliceName = 'thunkStatuses';
 
-const loadingTypesRegExp = new RegExp(
-  `(/${fetchingStatuses.pending}|/${fetchingStatuses.fulfilled}|/${fetchingStatuses.rejected})$`
-);
+type ThunkStatuses = 'pending' | 'fulfilled' | 'rejected';
 
+const loadingTypesRegExp = new RegExp(`(/pending|/fulfilled|/rejected)$`);
+
+
+/**
+ * Для всех санков текущий статус будет сохраняться сюда.
+ * Если для типа санка нет статуса, значит санк не был задействован
+ */
 const slice = createSlice({
   name: sliceName,
   reducers: {},
-  initialState: {} as Record<string, IFetchingStatuses>,
+  initialState: {} as Record<string, ThunkStatuses>,
   extraReducers: (builder) =>
     builder.addMatcher(
-      // @ts-ignore
       (action) => loadingTypesRegExp.test(action.type),
       (state, action) => {
         const [match] = action.type.match(loadingTypesRegExp);
         const fetchingStatus = trimStart(match, '/');
         const actionTypePrefix = action.type.replace(loadingTypesRegExp, '');
 
-        state[actionTypePrefix] = fetchingStatus as IFetchingStatuses;
+        state[actionTypePrefix] = fetchingStatus as ThunkStatuses;
       }
     ),
 });
 
-export const fetchingStatusesSelectors = {
-  selectState: (state) => state[sliceName],
-  selectByType: (type) => (state) =>
-    state[sliceName][type] || fetchingStatuses.idle,
+export const thunkStatusesSelectors = {
+  selectState: (state: RootState) => state[sliceName],
+  selectByType: (type) => (state: RootState) =>
+    state[sliceName][type] || ('idle' as const),
 };
 
-export const fetchingStatusesReducer = slice.reducer;
+export const thunkStatusesReducer = slice.reducer;
 
-<BlockUI blockingAction={asyncAction}> </BlockUI>
+export const useThunkStatus = (thunkAction: AsyncThunk<any, any, any>) => {
+  const actionStatus = useAppSelector(
+    thunkStatusesSelectors.selectByType(thunkAction.typePrefix)
+  );
+
+  const result = useMemo(() => {
+    return {
+      actionStatus,
+      isPending: actionStatus === 'pending',
+      isSuccess: actionStatus === 'fulfilled',
+    }
+  }, [actionStatus])
+
+  return result;
+};
